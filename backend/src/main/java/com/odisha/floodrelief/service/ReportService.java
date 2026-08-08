@@ -6,6 +6,9 @@ import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import com.odisha.floodrelief.dto.response.AuditLogResponse;
+import com.odisha.floodrelief.dto.response.NotificationResponse;
+import com.odisha.floodrelief.dto.response.PaymentResponse;
 import com.odisha.floodrelief.entity.AuditLog;
 import com.odisha.floodrelief.entity.Campaign;
 import com.odisha.floodrelief.entity.Donation;
@@ -189,15 +192,67 @@ public class ReportService {
         return baos.toByteArray();
     }
 
-    public Page<Payment> getAllPayments(Pageable pageable) {
-        return paymentRepository.findAllByOrderByCreatedAtDesc(pageable);
+    public Page<PaymentResponse> getAllPayments(Pageable pageable) {
+        return paymentRepository.findAllByOrderByCreatedAtDesc(pageable).map(this::toPaymentResponse);
     }
 
-    public Page<AuditLog> getAuditLogs(Pageable pageable) {
-        return auditLogRepository.findAllByOrderByCreatedAtDesc(pageable);
+    public Page<AuditLogResponse> getAuditLogs(Pageable pageable) {
+        return auditLogRepository.findAllByOrderByCreatedAtDesc(pageable).map(this::toAuditLogResponse);
     }
 
-    public Page<Notification> getMyNotifications(Pageable pageable, Long userId) {
-        return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
+    public Page<NotificationResponse> getMyNotifications(Pageable pageable, Long userId) {
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable)
+                .map(this::toNotificationResponse);
+    }
+
+    private PaymentResponse toPaymentResponse(Payment payment) {
+        String donationId = null;
+        String donorName = null;
+        if (payment.getDonation() != null) {
+            donationId = payment.getDonation().getDonationId();
+            donorName = payment.getDonation().getDonorName();
+        }
+        return PaymentResponse.builder()
+                .id(payment.getId())
+                .paymentId(payment.getPaymentId())
+                .amount(payment.getAmount())
+                .paymentMethod(payment.getPaymentMethod())
+                .transactionRef(payment.getTransactionRef())
+                .status(payment.getStatus())
+                .donationId(donationId)
+                .donorName(donorName)
+                .createdAt(payment.getCreatedAt())
+                .build();
+    }
+
+    private AuditLogResponse toAuditLogResponse(AuditLog log) {
+        String username = null;
+        String fullName = null;
+        if (log.getUser() != null) {
+            username = log.getUser().getUsername();
+            fullName = log.getUser().getFullName();
+        }
+        return AuditLogResponse.builder()
+                .id(log.getId())
+                .action(log.getAction())
+                .entityType(log.getEntityType())
+                .entityId(log.getEntityId())
+                .details(log.getDetails())
+                .ipAddress(log.getIpAddress())
+                .username(username)
+                .fullName(fullName)
+                .createdAt(log.getCreatedAt())
+                .build();
+    }
+
+    private NotificationResponse toNotificationResponse(Notification notification) {
+        return NotificationResponse.builder()
+                .id(notification.getId())
+                .title(notification.getTitle())
+                .message(notification.getMessage())
+                .isRead(notification.getIsRead())
+                .type(notification.getType())
+                .createdAt(notification.getCreatedAt())
+                .build();
     }
 }

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem,
@@ -8,7 +8,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeModeContext } from '../../context/ThemeContext';
 
@@ -24,7 +23,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { user, logout, getDashboardPath } = useAuth();
+  const { user, logout, getDashboardPath, hasRole } = useAuth();
   const { mode, toggleTheme } = useContext(ThemeModeContext);
   const navigate = useNavigate();
   const theme = useTheme();
@@ -36,6 +35,8 @@ export default function Navbar() {
     await logout();
     navigate('/');
   };
+
+  const closeMenu = () => setAnchorEl(null);
 
   return (
     <>
@@ -63,6 +64,11 @@ export default function Navbar() {
                   {link.label}
                 </Button>
               ))}
+              {hasRole('CEO') && (
+                <Button color="inherit" component={RouterLink} to="/dashboard/admin" size="small" sx={{ fontWeight: 700 }}>
+                  Approvals
+                </Button>
+              )}
             </Box>
           )}
 
@@ -77,12 +83,17 @@ export default function Navbar() {
                   {user.fullName?.charAt(0) || user.username?.charAt(0)}
                 </Avatar>
               </IconButton>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={closeMenu}>
                 <MenuItem disabled>{user.fullName || user.username}</MenuItem>
-                <MenuItem onClick={() => { setAnchorEl(null); navigate(getDashboardPath()); }}>
+                <MenuItem onClick={() => { closeMenu(); navigate(getDashboardPath()); }}>
                   Dashboard
                 </MenuItem>
-                <MenuItem onClick={() => { setAnchorEl(null); navigate('/profile'); }}>Profile</MenuItem>
+                {hasRole('CEO') && (
+                  <MenuItem onClick={() => { closeMenu(); navigate('/dashboard/admin'); }}>
+                    Approvals (Members / Volunteers)
+                  </MenuItem>
+                )}
+                <MenuItem onClick={() => { closeMenu(); navigate('/profile'); }}>Profile</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
@@ -104,6 +115,16 @@ export default function Navbar() {
               <ListItemText primary={link.label} />
             </ListItem>
           ))}
+          {hasRole('CEO') && (
+            <ListItem button component={RouterLink} to="/dashboard/admin" onClick={() => setDrawerOpen(false)}>
+              <ListItemText primary="Approvals (Members / Volunteers)" />
+            </ListItem>
+          )}
+          {user && (
+            <ListItem button component={RouterLink} to={getDashboardPath()} onClick={() => setDrawerOpen(false)}>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+          )}
         </List>
       </Drawer>
     </>

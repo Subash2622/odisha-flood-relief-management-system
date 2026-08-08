@@ -75,7 +75,21 @@ export default function AdminDashboard() {
                   <TableCell>{m.fullName}</TableCell>
                   <TableCell>{m.email}</TableCell>
                   <TableCell>{m.status}</TableCell>
-                  <TableCell><Button size="small" onClick={() => membershipApi.approve(m.id).then(() => setMsg('Member approved'))}>Approve</Button></TableCell>
+                  <TableCell>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() =>
+                        membershipApi.approve(m.id).then(() => {
+                          setMsg('Member approved');
+                          membershipApi.pending({ size: 20 }).then((d) => setPendingMembers(d.content || []));
+                          dashboardApi.admin().then(setStats).catch(() => {});
+                        })
+                      }
+                    >
+                      Approve
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

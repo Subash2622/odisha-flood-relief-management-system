@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box, Grid, Typography, Card, CardContent, Table, TableBody, TableCell,
   TableHead, TableRow, Button, Tabs, Tab, Dialog, DialogTitle, DialogContent,
@@ -17,6 +18,7 @@ import PageHeader from '../../components/common/PageHeader';
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement);
 
 export default function CeoDashboard() {
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [tab, setTab] = useState(0);
   const [users, setUsers] = useState([]);
@@ -66,6 +68,16 @@ export default function CeoDashboard() {
       <PageHeader title="CEO Dashboard" subtitle="Complete financial overview and system management" />
       {msg && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setMsg('')}>{msg}</Alert>}
 
+      <Alert severity="info" sx={{ mb: 2 }}
+        action={
+          <Button color="inherit" size="small" variant="outlined" onClick={() => navigate('/dashboard/admin')}>
+            Open Approvals
+          </Button>
+        }
+      >
+        Approve pending members &amp; volunteers from the Approvals page.
+      </Alert>
+
       <Grid container spacing={2} mb={3}>
         <Grid item xs={6} md={3}><StatCard title="Total Donations" value={`₹${data.totalDonations?.toLocaleString()}`} icon={<AttachMoneyIcon />} /></Grid>
         <Grid item xs={6} md={3}><StatCard title="Today's Donations" value={`₹${data.todayDonations?.toLocaleString()}`} color="success.main" /></Grid>
@@ -99,6 +111,9 @@ export default function CeoDashboard() {
       </Grid>
 
       <Box display="flex" gap={1} mb={2} flexWrap="wrap">
+        <Button variant="contained" color="warning" onClick={() => navigate('/dashboard/admin')}>
+          Approve Members / Volunteers
+        </Button>
         <Button variant="contained" onClick={exportExcel}>Donations Excel</Button>
         <Button variant="contained" color="secondary" onClick={exportPdf}>Donations PDF</Button>
         <Button variant="outlined" onClick={() => ceoApi.exportMembersExcel()}>Members Excel</Button>
@@ -166,7 +181,7 @@ export default function CeoDashboard() {
               {auditLogs.map((l) => (
                 <TableRow key={l.id}>
                   <TableCell>{l.action}</TableCell>
-                  <TableCell>{l.user?.username || '-'}</TableCell>
+                  <TableCell>{l.username || l.user?.username || '-'}</TableCell>
                   <TableCell>{l.details}</TableCell>
                   <TableCell>{l.createdAt?.substring(0, 19)}</TableCell>
                 </TableRow>
