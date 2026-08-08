@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "Odisha Flood Relief NGO API",
+    "description": "REST API collection for Odisha Flood Relief & NGO Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user1\",\n  \"email\": \"user1@test.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Test User\",\n  \"phone\": \"9876543210\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usernameOrEmail\": \"ceo\",\n  \"password\": \"ceo123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Campaigns",
+      "item": [
+        {
+          "name": "Get Active Campaigns",
+          "request": { "method": "GET", "url": "{{baseUrl}}/campaigns/active" }
+        },
+        {
+          "name": "Get Campaign by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/campaigns/1" }
+        }
+      ]
+    },
+    {
+      "name": "Donations",
+      "item": [
+        {
+          "name": "Guest Donate",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/donations/guest",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500,\n  \"donorName\": \"John Doe\",\n  \"donorEmail\": \"john@test.com\",\n  \"paymentMethod\": \"UPI\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Preset Amounts",
+          "request": { "method": "GET", "url": "{{baseUrl}}/donations/amounts" }
+        }
+      ]
+    },
+    {
+      "name": "CEO",
+      "item": [
+        {
+          "name": "CEO Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/dashboard/ceo"
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/ceo/users"
+          }
+        },
+        {
+          "name": "Export Donations Excel",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/ceo/reports/donations/excel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Membership",
+      "item": [
+        {
+          "name": "Apply Membership",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/membership/apply"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Volunteers",
+      "item": [
+        {
+          "name": "Apply Volunteer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/volunteers/apply"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flood Reports",
+      "item": [
+        {
+          "name": "Public Flood Report",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/flood-reports/public",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"village\": \"Test Village\",\n  \"district\": \"Cuttack\",\n  \"description\": \"Heavy flooding reported\",\n  \"urgency\": \"HIGH\",\n  \"reporterName\": \"Citizen\",\n  \"reporterPhone\": \"9876543210\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Get Organization",
+          "request": { "method": "GET", "url": "{{baseUrl}}/public/organization" }
+        },
+        {
+          "name": "Get Announcements",
+          "request": { "method": "GET", "url": "{{baseUrl}}/announcements" }
+        }
+      ]
+    }
+  ]
+}

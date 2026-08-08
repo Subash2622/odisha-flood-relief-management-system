@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: flood-relief-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flood_relief_ngo
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - flood-relief-network
+
+  backend:
+    build: ./backend
+    container_name: flood-relief-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/flood_relief_ngo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - flood-relief-network
+
+  frontend:
+    build: ./frontend
+    container_name: flood-relief-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - flood-relief-network
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+networks:
+  flood-relief-network:
+    driver: bridge

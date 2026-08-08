@@ -1,0 +1,4 @@
+# Ignore local DB dumps and secrets
+*.sql.bak
+*.env
+local/

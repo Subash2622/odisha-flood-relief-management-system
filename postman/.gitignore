@@ -1,0 +1,4 @@
+# Ignore local Postman environments with secrets
+*local*.json
+*secret*.json
+*.environment.json

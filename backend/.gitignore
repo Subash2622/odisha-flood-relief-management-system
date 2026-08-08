@@ -1,0 +1,43 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.factorypath
+bin/
+out/
+
+# Runtime
+uploads/
+!uploads/.gitkeep
+logs/
+*.log
+
+# Secrets / local config
+src/main/resources/application-local.properties
+src/main/resources/application-secret.properties
+*.pem
+*.jks
+*.p12
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+.jacoco/
+surefire-reports/
+failsafe-reports/
