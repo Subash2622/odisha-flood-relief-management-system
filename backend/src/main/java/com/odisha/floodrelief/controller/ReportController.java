@@ -2,9 +2,9 @@ package com.odisha.floodrelief.controller;
 
 import com.odisha.floodrelief.dto.request.ReliefDistributionRequest;
 import com.odisha.floodrelief.dto.response.ApiResponse;
-import com.odisha.floodrelief.entity.AuditLog;
-import com.odisha.floodrelief.entity.Payment;
-import com.odisha.floodrelief.entity.ReliefDistribution;
+import com.odisha.floodrelief.dto.response.AuditLogResponse;
+import com.odisha.floodrelief.dto.response.PaymentResponse;
+import com.odisha.floodrelief.dto.response.ReliefDistributionResponse;
 import com.odisha.floodrelief.service.ReliefService;
 import com.odisha.floodrelief.service.ReportService;
 import io.swagger.annotations.Api;
@@ -74,21 +74,21 @@ public class ReportController {
     @ApiOperation("Get all payments (CEO only)")
     @GetMapping("/ceo/payments")
     @PreAuthorize("hasRole('CEO')")
-    public ResponseEntity<ApiResponse<Page<Payment>>> getAllPayments(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<PaymentResponse>>> getAllPayments(Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(reportService.getAllPayments(pageable)));
     }
 
     @ApiOperation("Get audit logs (CEO only)")
     @GetMapping("/ceo/audit-logs")
     @PreAuthorize("hasRole('CEO')")
-    public ResponseEntity<ApiResponse<Page<AuditLog>>> getAuditLogs(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<AuditLogResponse>>> getAuditLogs(Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(reportService.getAuditLogs(pageable)));
     }
 
     @ApiOperation("Record relief distribution")
     @PostMapping("/admin/relief/distribute")
     @PreAuthorize("hasAnyRole('CEO', 'ADMIN')")
-    public ResponseEntity<ApiResponse<ReliefDistribution>> distribute(
+    public ResponseEntity<ApiResponse<ReliefDistributionResponse>> distribute(
             @Valid @RequestPart("distribution") ReliefDistributionRequest request,
             @RequestPart(value = "campPhoto", required = false) MultipartFile campPhoto) {
         return ResponseEntity.ok(ApiResponse.success("Distribution recorded",
@@ -98,14 +98,14 @@ public class ReportController {
     @ApiOperation("Get relief distribution history")
     @GetMapping("/admin/relief/history")
     @PreAuthorize("hasAnyRole('CEO', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Page<ReliefDistribution>>> getHistory(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<ReliefDistributionResponse>>> getHistory(Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(reliefService.getDistributionHistory(pageable)));
     }
 
     @ApiOperation("Get my relief distributions (Volunteer)")
     @GetMapping("/volunteer/relief/my")
     @PreAuthorize("hasRole('VOLUNTEER')")
-    public ResponseEntity<ApiResponse<Page<ReliefDistribution>>> getMyDistributions(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<ReliefDistributionResponse>>> getMyDistributions(Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(reliefService.getMyDistributions(pageable)));
     }
 
