@@ -1,3 +1,8 @@
+# =========================
+# Backend - Spring Boot
+# Author: Subash Chandra Sahoo | Software Engineer
+# =========================
+
 # Maven
 target/
 pom.xml.tag
@@ -26,12 +31,17 @@ uploads/
 logs/
 *.log
 
-# Secrets / local config
+# Secrets / local config (NEVER commit)
 src/main/resources/application-local.properties
 src/main/resources/application-secret.properties
+src/main/resources/application-prod.properties
+!src/main/resources/application-local.properties.example
 *.pem
 *.jks
 *.p12
+*.keystore
+.env
+.env.*
 
 # OS
 .DS_Store

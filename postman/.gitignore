@@ -1,4 +1,11 @@
-# Ignore local Postman environments with secrets
+# =========================
+# Postman collections
+# Author: Subash Chandra Sahoo | Software Engineer
+# =========================
+
+# Environments often contain tokens / passwords — never commit
 *local*.json
 *secret*.json
 *.environment.json
+*.env.json
+globals.local.json
