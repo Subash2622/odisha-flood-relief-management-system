@@ -1,3 +1,9 @@
+/*
+ * Subash Chandra Sahoo
+ * Software Engineer
+ * Odisha Flood Relief & NGO Management System
+ * Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+ */
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';

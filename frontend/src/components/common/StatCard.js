@@ -1,3 +1,9 @@
+/*
+ * Subash Chandra Sahoo
+ * Software Engineer
+ * Odisha Flood Relief & NGO Management System
+ * Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+ */
 import { Card, CardContent, Typography, Box } from '@mui/material';
 
 export default function StatCard({ title, value, icon, color = 'primary.main', subtitle }) {

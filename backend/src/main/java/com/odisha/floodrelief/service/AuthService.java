@@ -1,5 +1,10 @@
 package com.odisha.floodrelief.service;
 
+// Subash Chandra Sahoo
+// Software Engineer
+// Odisha Flood Relief & NGO Management System
+// Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+
 import com.odisha.floodrelief.dto.request.LoginRequest;
 import com.odisha.floodrelief.dto.request.RegisterRequest;
 import com.odisha.floodrelief.dto.response.JwtResponse;
@@ -82,13 +87,18 @@ public class AuthService {
 
         User user = userRepository.findByUsernameIgnoreCase(loginId)
                 .orElseGet(() -> userRepository.findByEmailIgnoreCase(loginId)
-                        .orElseThrow(() -> new BadRequestException("User does not exist. Please check username/email.")));
+                        .orElseThrow(() -> {
+                            log.warn("LOGIN failed - user not found: {}", loginId);
+                            return new BadRequestException("User does not exist. Please check username/email.");
+                        }));
 
         if (!Boolean.TRUE.equals(user.getEnabled())) {
+            log.warn("LOGIN failed - account disabled: {}", user.getUsername());
             throw new BadRequestException("Account is disabled. Contact admin/CEO.");
         }
 
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            log.warn("LOGIN failed - incorrect password for user: {}", user.getUsername());
             throw new BadRequestException("Incorrect password. Use Forgot Password if you forgot it.");
         }
 
@@ -100,7 +110,7 @@ public class AuthService {
         String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
         auditLogUtil.log(user, "LOGIN", "User", user.getId(), "User logged in");
-
+        log.info("LOGIN success: username={} id={}", user.getUsername(), user.getId());
         return JwtResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
