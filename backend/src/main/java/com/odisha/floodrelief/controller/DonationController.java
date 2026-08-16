@@ -1,5 +1,10 @@
 package com.odisha.floodrelief.controller;
 
+// Subash Chandra Sahoo
+// Software Engineer
+// Odisha Flood Relief & NGO Management System
+// Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+
 import com.odisha.floodrelief.dto.request.DonationRequest;
 import com.odisha.floodrelief.dto.response.ApiResponse;
 import com.odisha.floodrelief.dto.response.DonationResponse;

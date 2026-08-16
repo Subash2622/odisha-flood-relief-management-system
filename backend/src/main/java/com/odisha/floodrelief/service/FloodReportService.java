@@ -1,5 +1,10 @@
 package com.odisha.floodrelief.service;
 
+// Subash Chandra Sahoo
+// Software Engineer
+// Odisha Flood Relief & NGO Management System
+// Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+
 import com.odisha.floodrelief.dto.request.FloodReportRequest;
 import com.odisha.floodrelief.dto.response.FloodReportResponse;
 import com.odisha.floodrelief.entity.FloodReport;
@@ -11,6 +16,7 @@ import com.odisha.floodrelief.repository.UserRepository;
 import com.odisha.floodrelief.security.UserPrincipal;
 import com.odisha.floodrelief.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FloodReportService {
@@ -51,7 +58,10 @@ public class FloodReportService {
             report.setPhotoPath(fileStorageUtil.storeFile(photo, "flood-reports"));
         }
 
-        return mapToResponse(floodReportRepository.save(report));
+        FloodReport saved = floodReportRepository.save(report);
+        log.info("FLOOD_REPORT created: id={} district={} village={} public={}",
+                saved.getId(), saved.getDistrict(), saved.getVillage(), isPublic);
+        return mapToResponse(saved);
     }
 
     @Transactional
@@ -65,7 +75,9 @@ public class FloodReportService {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         userRepository.findById(principal.getId()).ifPresent(report::setHandledBy);
 
-        return mapToResponse(floodReportRepository.save(report));
+        FloodReport saved = floodReportRepository.save(report);
+        log.info("FLOOD_REPORT status updated: id={} status={}", saved.getId(), status);
+        return mapToResponse(saved);
     }
 
     public Page<FloodReportResponse> getAllReports(Pageable pageable) {

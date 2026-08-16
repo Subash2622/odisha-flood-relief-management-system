@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Subash Chandra Sahoo
+  Software Engineer
+  Odisha Flood Relief & NGO Management System
+  Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+-->
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <!-- Project root /log folder (backend runs with cwd=backend → ../log) -->
+    <property name="LOG_DIR" value="${LOG_PATH:-../log}"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_DIR}/odisha-flood-relief.log}"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Active session file (name set at startup with date-time stamp) -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_FILE}</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Also roll daily archive copies under /log -->
+    <appender name="DAILY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/odisha-flood-relief-daily.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archive/odisha-flood-relief-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="com.odisha.floodrelief" level="INFO"/>
+    <logger name="com.odisha.floodrelief.logging" level="INFO"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="DAILY"/>
+    </root>
+</configuration>

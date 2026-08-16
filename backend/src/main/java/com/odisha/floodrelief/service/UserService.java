@@ -1,5 +1,10 @@
 package com.odisha.floodrelief.service;
 
+// Subash Chandra Sahoo
+// Software Engineer
+// Odisha Flood Relief & NGO Management System
+// Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+
 import com.odisha.floodrelief.dto.response.UserResponse;
 import com.odisha.floodrelief.entity.Role;
 import com.odisha.floodrelief.entity.User;
@@ -12,6 +17,7 @@ import com.odisha.floodrelief.security.UserPrincipal;
 import com.odisha.floodrelief.util.AuditLogUtil;
 import com.odisha.floodrelief.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {

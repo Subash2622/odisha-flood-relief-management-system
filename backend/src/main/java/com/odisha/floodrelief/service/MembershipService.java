@@ -1,5 +1,10 @@
 package com.odisha.floodrelief.service;
 
+// Subash Chandra Sahoo
+// Software Engineer
+// Odisha Flood Relief & NGO Management System
+// Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+
 import com.odisha.floodrelief.dto.response.MemberResponse;
 import com.odisha.floodrelief.entity.*;
 import com.odisha.floodrelief.entity.enums.ApprovalStatus;
@@ -10,6 +15,7 @@ import com.odisha.floodrelief.repository.*;
 import com.odisha.floodrelief.security.UserPrincipal;
 import com.odisha.floodrelief.util.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.HashSet;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MembershipService {
@@ -49,7 +56,9 @@ public class MembershipService {
                 .status(ApprovalStatus.PENDING)
                 .build();
 
-        return mapToResponse(memberRepository.save(member));
+        Member saved = memberRepository.save(member);
+        log.info("MEMBERSHIP applied: membershipId={} user={}", saved.getMembershipId(), user.getUsername());
+        return mapToResponse(saved);
     }
 
     @Transactional
@@ -71,6 +80,7 @@ public class MembershipService {
         userRepository.save(user);
 
         member = memberRepository.save(member);
+        log.info("MEMBERSHIP approved: membershipId={} user={}", member.getMembershipId(), user.getUsername());
 
         String pdfPath = pdfUtil.generateMembershipCard(
                 member.getMembershipId(),

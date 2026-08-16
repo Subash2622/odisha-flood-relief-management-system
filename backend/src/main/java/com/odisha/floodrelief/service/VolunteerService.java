@@ -1,5 +1,10 @@
 package com.odisha.floodrelief.service;
 
+// Subash Chandra Sahoo
+// Software Engineer
+// Odisha Flood Relief & NGO Management System
+// Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+
 import com.odisha.floodrelief.dto.response.VolunteerResponse;
 import com.odisha.floodrelief.entity.*;
 import com.odisha.floodrelief.entity.enums.ApprovalStatus;
@@ -13,6 +18,7 @@ import com.odisha.floodrelief.util.AuditLogUtil;
 import com.odisha.floodrelief.util.FileStorageUtil;
 import com.odisha.floodrelief.util.IdGeneratorUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VolunteerService {
@@ -47,7 +54,9 @@ public class VolunteerService {
                 .status(ApprovalStatus.PENDING)
                 .build();
 
-        return mapToResponse(volunteerRepository.save(volunteer));
+        Volunteer saved = volunteerRepository.save(volunteer);
+        log.info("VOLUNTEER applied: user={}", user.getUsername());
+        return mapToResponse(saved);
     }
 
     @Transactional
@@ -65,6 +74,7 @@ public class VolunteerService {
         userRepository.save(user);
 
         volunteer = volunteerRepository.save(volunteer);
+        log.info("VOLUNTEER approved: volunteerId={} user={}", volunteer.getVolunteerId(), user.getUsername());
 
         notificationRepository.save(Notification.builder()
                 .user(user)

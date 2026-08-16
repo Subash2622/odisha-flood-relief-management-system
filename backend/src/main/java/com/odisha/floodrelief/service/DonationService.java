@@ -1,5 +1,10 @@
 package com.odisha.floodrelief.service;
 
+// Subash Chandra Sahoo
+// Software Engineer
+// Odisha Flood Relief & NGO Management System
+// Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+
 import com.odisha.floodrelief.dto.request.DonationRequest;
 import com.odisha.floodrelief.dto.response.DonationResponse;
 import com.odisha.floodrelief.entity.*;
@@ -76,6 +81,8 @@ public class DonationService {
         donation.setReceiptPath(receiptPath);
 
         donation = donationRepository.save(donation);
+        log.info("DONATION created: id={} amount={} guest={} donor={}",
+                donationId, request.getAmount(), isGuest, donorName);
 
         Payment payment = Payment.builder()
                 .paymentId(idGeneratorUtil.generatePaymentId())
