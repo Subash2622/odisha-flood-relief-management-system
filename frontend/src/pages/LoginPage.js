@@ -37,11 +37,20 @@ export default function LoginPage() {
       <Card>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField fullWidth label="Username or Email" margin="normal" {...register('usernameOrEmail', { required: true })} />
+            <TextField
+              fullWidth
+              label="Username or Email"
+              margin="normal"
+              defaultValue={location.state?.username || ''}
+              {...register('usernameOrEmail', { required: true })}
+            />
             <TextField fullWidth label="Password" type="password" margin="normal" {...register('password', { required: true })} />
             <Button type="submit" variant="contained" fullWidth size="large" sx={{ mt: 2 }}>Login</Button>
           </form>
           <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+            <Link component={RouterLink} to="/forgot-password">Forgot Password?</Link>
+          </Typography>
+          <Typography variant="body2" align="center" sx={{ mt: 1 }}>
             Don't have an account? <Link component={RouterLink} to="/register">Register</Link>
           </Typography>
           <Typography variant="caption" color="text.secondary" display="block" align="center" sx={{ mt: 1 }}>

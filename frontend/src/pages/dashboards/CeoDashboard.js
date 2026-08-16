@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box, Grid, Typography, Card, CardContent, Table, TableBody, TableCell,
   TableHead, TableRow, Button, Tabs, Tab, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Alert,
+  DialogActions, TextField, Alert, MenuItem, Chip,
 } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PeopleIcon from '@mui/icons-material/People';
@@ -28,6 +28,9 @@ export default function CeoDashboard() {
   const [adminDialog, setAdminDialog] = useState(false);
   const [adminForm, setAdminForm] = useState({ username: '', email: '', password: '', fullName: '' });
   const [msg, setMsg] = useState('');
+  const [popups, setPopups] = useState([]);
+  const [popupDialog, setPopupDialog] = useState(false);
+  const [popupForm, setPopupForm] = useState({ title: '', message: '', type: 'SUGGESTION', priority: 0 });
 
   useEffect(() => {
     dashboardApi.ceo().then(setData).catch(() => {});
@@ -38,7 +41,10 @@ export default function CeoDashboard() {
     if (tab === 1) ceoApi.users({ size: 20 }).then((d) => setUsers(d.content || [])).catch(() => {});
     if (tab === 2) ceoApi.auditLogs({ size: 20 }).then((d) => setAuditLogs(d.content || [])).catch(() => {});
     if (tab === 3) ceoApi.payments({ size: 20 }).then((d) => setPayments(d.content || [])).catch(() => {});
+    if (tab === 5) loadPopups();
   }, [tab]);
+
+  const loadPopups = () => ceoApi.popups().then(setPopups).catch(() => {});
 
   const exportExcel = async () => {
     await ceoApi.exportDonationsExcel();
@@ -53,6 +59,21 @@ export default function CeoDashboard() {
     setAdminDialog(false);
     setMsg('Admin created successfully');
     setAdminForm({ username: '', email: '', password: '', fullName: '' });
+  };
+
+  const createPopup = async () => {
+    if (!popupForm.title.trim() || !popupForm.message.trim()) {
+      setMsg('Popup title and message are required');
+      return;
+    }
+    await ceoApi.createPopup({
+      ...popupForm,
+      priority: Number(popupForm.priority) || 0,
+    });
+    setPopupDialog(false);
+    setPopupForm({ title: '', message: '', type: 'SUGGESTION', priority: 0 });
+    setMsg('Home popup published');
+    loadPopups();
   };
 
   if (!data) return <Typography>Loading CEO dashboard...</Typography>;
@@ -114,6 +135,9 @@ export default function CeoDashboard() {
         <Button variant="contained" color="warning" onClick={() => navigate('/dashboard/admin')}>
           Approve Members / Volunteers
         </Button>
+        <Button variant="contained" color="info" onClick={() => setTab(5)}>
+          Home Popups (Suggestions / Bugs)
+        </Button>
         <Button variant="contained" onClick={exportExcel}>Donations Excel</Button>
         <Button variant="contained" color="secondary" onClick={exportPdf}>Donations PDF</Button>
         <Button variant="outlined" onClick={() => ceoApi.exportMembersExcel()}>Members Excel</Button>
@@ -123,12 +147,13 @@ export default function CeoDashboard() {
         <Button variant="outlined" onClick={() => setAdminDialog(true)}>Create Admin</Button>
       </Box>
 
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
+      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }} variant="scrollable" scrollButtons="auto">
         <Tab label="Recent Transactions" />
         <Tab label="All Users" />
         <Tab label="Audit Logs" />
         <Tab label="Payments" />
         <Tab label="Bank Details" />
+        <Tab label="Home Popups" />
       </Tabs>
 
       {tab === 0 && (
@@ -218,6 +243,54 @@ export default function CeoDashboard() {
         </CardContent></Card>
       )}
 
+      {tab === 5 && (
+        <Card><CardContent>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography variant="h6">Home screen popups (Suggestions / Bugs)</Typography>
+            <Button variant="contained" onClick={() => setPopupDialog(true)}>Create Popup</Button>
+          </Box>
+          <Typography variant="body2" color="text.secondary" mb={2}>
+            Active popups appear on the home page. Visitors can close them (like ecommerce offers). Closed popups stay dismissed in their browser.
+          </Typography>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Type</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Message</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {popups.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell><Chip size="small" label={p.type} color={p.type === 'BUG' ? 'error' : p.type === 'WARNING' ? 'warning' : 'info'} /></TableCell>
+                  <TableCell>{p.title}</TableCell>
+                  <TableCell>{p.message?.substring(0, 60)}{p.message?.length > 60 ? '...' : ''}</TableCell>
+                  <TableCell>
+                    <Chip size="small" label={p.isActive ? 'Active' : 'Off'} color={p.isActive ? 'success' : 'default'} />
+                  </TableCell>
+                  <TableCell>
+                    <Button size="small" onClick={() => ceoApi.togglePopup(p.id).then(loadPopups)}>
+                      {p.isActive ? 'Deactivate' : 'Activate'}
+                    </Button>
+                    <Button size="small" color="error" onClick={() => ceoApi.deletePopup(p.id).then(loadPopups)}>
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {popups.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">No popups yet. Create one for suggestions or bug notices.</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent></Card>
+      )}
+
       {data.topDonors?.length > 0 && (
         <Card sx={{ mt: 3 }}><CardContent>
           <Typography variant="h6" gutterBottom>Top Donors</Typography>
@@ -239,6 +312,37 @@ export default function CeoDashboard() {
         <DialogActions>
           <Button onClick={() => setAdminDialog(false)}>Cancel</Button>
           <Button variant="contained" onClick={createAdmin}>Create</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={popupDialog} onClose={() => setPopupDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Create Home Popup</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth select label="Type" margin="dense" value={popupForm.type}
+            onChange={(e) => setPopupForm({ ...popupForm, type: e.target.value })}
+          >
+            <MenuItem value="SUGGESTION">Suggestion</MenuItem>
+            <MenuItem value="BUG">Bug Notice</MenuItem>
+            <MenuItem value="WARNING">Warning</MenuItem>
+            <MenuItem value="OFFER">Offer</MenuItem>
+          </TextField>
+          <TextField
+            fullWidth label="Title" margin="dense" value={popupForm.title}
+            onChange={(e) => setPopupForm({ ...popupForm, title: e.target.value })}
+          />
+          <TextField
+            fullWidth label="Message" margin="dense" multiline rows={4} value={popupForm.message}
+            onChange={(e) => setPopupForm({ ...popupForm, message: e.target.value })}
+          />
+          <TextField
+            fullWidth label="Priority (higher shows first)" type="number" margin="dense" value={popupForm.priority}
+            onChange={(e) => setPopupForm({ ...popupForm, priority: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPopupDialog(false)}>Cancel</Button>
+          <Button variant="contained" onClick={createPopup}>Publish</Button>
         </DialogActions>
       </Dialog>
     </Box>

@@ -12,6 +12,7 @@ import FloodReportPage from './pages/FloodReportPage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import CeoDashboard from './pages/dashboards/CeoDashboard';
 import AdminDashboard from './pages/dashboards/AdminDashboard';
@@ -36,6 +37,7 @@ export default function App() {
       <Route path="/contact" element={<PublicRoute><ContactPage /></PublicRoute>} />
       <Route path="/login" element={<PublicRoute hideFooter><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute hideFooter><RegisterPage /></PublicRoute>} />
+      <Route path="/forgot-password" element={<PublicRoute hideFooter><ForgotPasswordPage /></PublicRoute>} />
 
       <Route path="/profile" element={
         <ProtectedRoute>

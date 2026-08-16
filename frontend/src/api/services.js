@@ -17,11 +17,14 @@ export const authApi = {
   login: (data) => api.post('/auth/login', data).then(unwrap),
   me: () => api.get('/auth/me').then(unwrap),
   logout: () => api.post('/auth/logout'),
+  forgotPassword: (data) => api.post('/auth/forgot-password', data).then(unwrap),
+  resetPassword: (data) => api.post('/auth/reset-password', data).then(unwrap),
 };
 
 export const publicApi = {
   organization: () => api.get('/public/organization').then(unwrap),
   announcements: () => api.get('/announcements').then(unwrap),
+  activePopups: () => api.get('/public/popups').then(unwrap),
   contact: (data) => api.post('/contact', data).then(unwrap),
 };
 
@@ -103,6 +106,10 @@ export const ceoApi = {
   exportVolunteersExcel: () => downloadBlob('/ceo/reports/volunteers/excel', 'volunteers.xlsx'),
   exportCampaignsExcel: () => downloadBlob('/ceo/reports/campaigns/excel', 'campaigns.xlsx'),
   exportFloodReportsExcel: () => downloadBlob('/ceo/reports/flood-reports/excel', 'flood-reports.xlsx'),
+  popups: () => api.get('/ceo/popups').then(unwrap),
+  createPopup: (data) => api.post('/ceo/popups', data).then(unwrap),
+  togglePopup: (id) => api.patch(`/ceo/popups/${id}/toggle`).then(unwrap),
+  deletePopup: (id) => api.delete(`/ceo/popups/${id}`).then(unwrap),
 };
 
 export const reliefApi = {

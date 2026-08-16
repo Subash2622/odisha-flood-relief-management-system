@@ -73,16 +73,31 @@ public class AuthService {
     }
 
     public JwtResponse login(LoginRequest request) {
+        String loginId = request.getUsernameOrEmail() == null ? "" : request.getUsernameOrEmail().trim();
+        String rawPassword = request.getPassword() == null ? "" : request.getPassword();
+
+        if (loginId.isEmpty() || rawPassword.isEmpty()) {
+            throw new BadRequestException("Username/email and password are required");
+        }
+
+        User user = userRepository.findByUsernameIgnoreCase(loginId)
+                .orElseGet(() -> userRepository.findByEmailIgnoreCase(loginId)
+                        .orElseThrow(() -> new BadRequestException("User does not exist. Please check username/email.")));
+
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            throw new BadRequestException("Account is disabled. Contact admin/CEO.");
+        }
+
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new BadRequestException("Incorrect password. Use Forgot Password if you forgot it.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsernameOrEmail(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(user.getUsername(), rawPassword));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = tokenProvider.generateAccessToken(authentication);
         String refreshToken = tokenProvider.generateRefreshToken(authentication);
-
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        User user = userRepository.findById(principal.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         auditLogUtil.log(user, "LOGIN", "User", user.getId(), "User logged in");
 

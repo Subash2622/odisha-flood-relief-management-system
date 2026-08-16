@@ -9,6 +9,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import { publicApi, campaignApi } from '../api/services';
 import { uploadUrl } from '../api/axios';
 import PageHeader from '../components/common/PageHeader';
+import HomePopupModal from '../components/common/HomePopupModal';
 
 export default function LandingPage() {
   const [org, setOrg] = useState(null);
@@ -23,6 +24,7 @@ export default function LandingPage() {
 
   return (
     <Box>
+      <HomePopupModal />
       <Box
         sx={{
           background: (t) => `linear-gradient(135deg, ${t.palette.primary.main} 0%, ${t.palette.primary.dark || '#0d47a1'} 100%)`,
