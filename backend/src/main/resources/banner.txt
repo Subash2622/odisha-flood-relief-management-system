@@ -1,0 +1,15 @@
+${AnsiColor.BRIGHT_CYAN}
+  ____        _               _
+ / ___| _   _| |__   __ _ ___| |__
+ \\___ \\| | | | '_ \\ / _` / __| '_ \\
+  ___) | |_| | |_) | (_| \\__ \\ | | |
+ |____/ \\__,_|_.__/ \\__,_|___/_| |_|
+${AnsiColor.BRIGHT_YELLOW}
+   Subash Chandra Sahoo
+   Software Engineer
+${AnsiColor.BRIGHT_GREEN}
+   Odisha Flood Relief & NGO Management System
+   Copyright (c) 2026 Subash Chandra Sahoo. All rights reserved.
+${AnsiColor.DEFAULT}
+ :: Powered by Subash ::               (v1.0.0)
+
