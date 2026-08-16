@@ -6,7 +6,7 @@
  */
 import { useEffect, useState } from 'react';
 import {
-  Box, Grid, Card, CardContent, Typography, Button, Alert, Table, TableBody, TableCell, TableHead, TableRow, Chip,
+  Box, Grid, Card, CardContent, Typography, Button, Alert, Table, TableBody, TableCell, TableHead, TableRow, Chip, Avatar,
 } from '@mui/material';
 import { membershipApi, donationApi, volunteerApi } from '../../api/services';
 import { uploadUrl } from '../../api/axios';
@@ -44,8 +44,18 @@ export default function MemberDashboard() {
           <Card sx={{ bgcolor: 'primary.main', color: 'white' }}>
             <CardContent>
               <Typography variant="overline">Digital Membership Card</Typography>
-              <Typography variant="h5" fontWeight={700}>{membership.fullName}</Typography>
-              <Typography variant="body1" sx={{ my: 1 }}>ID: {membership.membershipId}</Typography>
+              <Box display="flex" alignItems="center" gap={2} mb={1}>
+                <Avatar
+                  src={membership.profileImage ? uploadUrl(membership.profileImage) : undefined}
+                  sx={{ width: 72, height: 72, bgcolor: 'rgba(255,255,255,0.25)', fontSize: 28, border: '2px solid rgba(255,255,255,0.7)' }}
+                >
+                  {(membership.fullName || '?').charAt(0)}
+                </Avatar>
+                <Box>
+                  <Typography variant="h5" fontWeight={700}>{membership.fullName}</Typography>
+                  <Typography variant="body1">ID: {membership.membershipId}</Typography>
+                </Box>
+              </Box>
               <Chip label={membership.status} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', mb: 2 }} />
               <Typography variant="body2">Valid: {membership.validFrom} — {membership.validUntil}</Typography>
               {membership.qrCodePath && (

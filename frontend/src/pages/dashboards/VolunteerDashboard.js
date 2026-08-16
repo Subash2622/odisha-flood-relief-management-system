@@ -7,7 +7,7 @@
 import { useEffect, useState } from 'react';
 import {
   Box, Grid, Card, CardContent, Typography, Button, MenuItem, TextField, Alert, Table,
-  TableBody, TableCell, TableHead, TableRow, Chip,
+  TableBody, TableCell, TableHead, TableRow, Chip, Avatar,
 } from '@mui/material';
 import { volunteerApi, reliefApi, notificationApi } from '../../api/services';
 import { uploadUrl } from '../../api/axios';
@@ -54,7 +54,19 @@ export default function VolunteerDashboard() {
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>My Assignment</Typography>
+              <Typography variant="h6" gutterBottom>Volunteer Card</Typography>
+              <Box display="flex" alignItems="center" gap={2} mb={2}>
+                <Avatar
+                  src={profile.profileImage ? uploadUrl(profile.profileImage) : undefined}
+                  sx={{ width: 72, height: 72, bgcolor: 'primary.main', fontSize: 28 }}
+                >
+                  {(profile.fullName || '?').charAt(0)}
+                </Avatar>
+                <Box>
+                  <Typography variant="h6">{profile.fullName}</Typography>
+                  <Typography variant="body2" color="text.secondary">{profile.email}</Typography>
+                </Box>
+              </Box>
               <Typography><strong>Volunteer ID:</strong> {profile.volunteerId}</Typography>
               <Typography><strong>Status:</strong> <Chip label={profile.status} size="small" /></Typography>
               <Typography><strong>Area:</strong> {profile.assignedArea || 'Not assigned yet'}</Typography>

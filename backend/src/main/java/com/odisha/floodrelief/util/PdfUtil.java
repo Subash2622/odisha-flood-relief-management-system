@@ -8,6 +8,7 @@ package com.odisha.floodrelief.util;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
@@ -77,6 +78,10 @@ public class PdfUtil {
     }
 
     public String generateMembershipCard(String membershipId, String memberName, String validUntil) {
+        return generateMembershipCard(membershipId, memberName, validUntil, null);
+    }
+
+    public String generateMembershipCard(String membershipId, String memberName, String validUntil, String profileImagePath) {
         try {
             Path dir = getUploadRoot().resolve("membership-cards");
             Files.createDirectories(dir);
@@ -94,6 +99,24 @@ public class PdfUtil {
             document.add(new Paragraph("Odisha Flood Relief Foundation", titleFont));
             document.add(new Paragraph("Membership Card", titleFont));
             document.add(Chunk.NEWLINE);
+
+            if (profileImagePath != null && !profileImagePath.trim().isEmpty()) {
+                try {
+                    String relative = profileImagePath.startsWith("/uploads/")
+                            ? profileImagePath.substring("/uploads/".length())
+                            : profileImagePath.replaceFirst("^/+", "");
+                    Path imagePath = getUploadRoot().resolve(relative).normalize();
+                    if (imagePath.startsWith(getUploadRoot()) && Files.exists(imagePath)) {
+                        Image photo = Image.getInstance(imagePath.toAbsolutePath().toString());
+                        photo.scaleToFit(70, 70);
+                        document.add(photo);
+                        document.add(Chunk.NEWLINE);
+                    }
+                } catch (Exception imgEx) {
+                    log.warn("Could not embed profile photo on membership card: {}", imgEx.getMessage());
+                }
+            }
+
             document.add(new Paragraph("Member: " + memberName, normalFont));
             document.add(new Paragraph("Membership ID: " + membershipId, normalFont));
             document.add(new Paragraph("Valid Until: " + validUntil, normalFont));

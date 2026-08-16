@@ -44,13 +44,23 @@ export function AuthProvider({ children }) {
       username: data.username,
       email: data.email,
       fullName: data.fullName,
+      phone: data.phone,
+      address: data.address,
+      profileImage: data.profileImage,
       roles: data.roles,
     });
+    // Refresh full profile (phone/address/photo) from /auth/me
+    try {
+      const me = await authApi.me();
+      setUser(me);
+    } catch {
+      // keep login payload
+    }
     return data;
   };
 
-  const register = async (data) => {
-    await authApi.register(data);
+  const registerUser = async (data) => {
+    return authApi.register(data);
   };
 
   const logout = async () => {
@@ -78,7 +88,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, hasRole, getDashboardPath, refreshUser: loadUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register: registerUser, registerUser, logout, hasRole, getDashboardPath, refreshUser: loadUser }}>
       {children}
     </AuthContext.Provider>
   );

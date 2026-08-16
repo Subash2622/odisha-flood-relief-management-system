@@ -19,17 +19,6 @@ import com.odisha.floodrelief.service.PasswordResetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.Map;
-
-import com.odisha.floodrelief.service.AuthService;
-import com.odisha.floodrelief.service.PasswordResetService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +40,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterRequest request) {
         log.info("AUTH register requested for username={}", request.getUsername());
-        return ResponseEntity.ok(ApiResponse.success("Registration successful", authService.register(request)));
+        UserResponse created = authService.register(request);
+        log.info("AUTH register success for username={}", created.getUsername());
+        return ResponseEntity.ok(ApiResponse.success("Registration successful", created));
     }
 
     @ApiOperation("Login")

@@ -16,6 +16,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeModeContext } from '../../context/ThemeContext';
+import { uploadUrl } from '../../api/axios';
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -85,7 +86,10 @@ export default function Navbar() {
           {user ? (
             <>
               <IconButton color="inherit" onClick={(e) => setAnchorEl(e.currentTarget)}>
-                <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main', fontSize: 14 }}>
+                <Avatar
+                  src={user.profileImage ? uploadUrl(user.profileImage) : undefined}
+                  sx={{ width: 32, height: 32, bgcolor: 'secondary.main', fontSize: 14 }}
+                >
                   {user.fullName?.charAt(0) || user.username?.charAt(0)}
                 </Avatar>
               </IconButton>
