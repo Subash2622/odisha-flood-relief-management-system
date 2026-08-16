@@ -1,4 +1,19 @@
-# Ignore local DB dumps and secrets
+# =========================
+# Database scripts / dumps
+# Author: Subash Chandra Sahoo | Software Engineer
+# =========================
+
+# Local dumps & backups (may contain personal data)
 *.sql.bak
-*.env
+*.sql.gz
+*.dump
+*.dump.sql
 local/
+secrets/
+.env
+.env.*
+
+# Keep schema scripts; ignore ad-hoc local exports
+!*.sql
+local-*.sql
+*-local.sql

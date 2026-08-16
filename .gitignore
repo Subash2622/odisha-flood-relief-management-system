@@ -1,5 +1,6 @@
 # =========================
 # Root - Odisha Flood Relief & NGO Management System
+# Author: Subash Chandra Sahoo | Software Engineer
 # =========================
 
 # OS
@@ -43,8 +44,14 @@ out/
 secrets/
 credentials.json
 service-account*.json
-application-local.properties
-application-secret.properties
+
+# Spring Boot local/secret configs (NEVER commit real secrets)
+**/application-local.properties
+**/application-secret.properties
+**/application-prod.properties
+**/application-*.local.properties
+!**/application-local.properties.example
+!**/application-secret.properties.example
 **/application-local.yml
 **/application-secret.yml
 
@@ -92,15 +99,16 @@ temp/
 *.temp
 *.bak
 *.orig
-*.swp
 
 # Local DB dumps
 *.sql.gz
 *.dump
+*.sql.bak
 
 # Postman local/secret envs
 postman/*local*.json
 postman/*secret*.json
+postman/*.environment.json
 
 # Cursor local state
 .cursor/
