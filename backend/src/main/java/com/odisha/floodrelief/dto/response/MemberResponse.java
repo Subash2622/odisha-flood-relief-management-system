@@ -24,6 +24,7 @@ public class MemberResponse {
     private String membershipId;
     private String fullName;
     private String email;
+    private String profileImage;
     private ApprovalStatus status;
     private LocalDate validFrom;
     private LocalDate validUntil;

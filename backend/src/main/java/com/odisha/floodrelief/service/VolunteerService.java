@@ -155,6 +155,7 @@ public class VolunteerService {
                 .fullName(volunteer.getUser().getFullName())
                 .email(volunteer.getUser().getEmail())
                 .phone(volunteer.getUser().getPhone())
+                .profileImage(volunteer.getUser().getProfileImage())
                 .status(volunteer.getStatus())
                 .assignedArea(volunteer.getAssignedArea())
                 .assignedDistrict(volunteer.getAssignedDistrict())

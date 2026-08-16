@@ -85,7 +85,8 @@ public class MembershipService {
         String pdfPath = pdfUtil.generateMembershipCard(
                 member.getMembershipId(),
                 user.getFullName(),
-                member.getValidUntil().toString()
+                member.getValidUntil().toString(),
+                user.getProfileImage()
         );
 
         MembershipCard card = MembershipCard.builder()
@@ -148,16 +149,12 @@ public class MembershipService {
         }
         try {
             MembershipCard card = membershipCardRepository.findByMemberId(member.getId()).orElse(null);
-            if (card != null && card.getPdfPath() != null) {
-                byte[] existing = pdfUtil.readFileBytes(card.getPdfPath());
-                if (existing != null) {
-                    return existing;
-                }
-            }
+            // Always regenerate so latest profile photo/name are on the card
             String pdfPath = pdfUtil.generateMembershipCard(
                     member.getMembershipId(),
                     member.getUser().getFullName(),
-                    member.getValidUntil() != null ? member.getValidUntil().toString() : "");
+                    member.getValidUntil() != null ? member.getValidUntil().toString() : "",
+                    member.getUser().getProfileImage());
             if (card != null) {
                 card.setPdfPath(pdfPath);
                 membershipCardRepository.save(card);
@@ -180,6 +177,7 @@ public class MembershipService {
                 .membershipId(member.getMembershipId())
                 .fullName(member.getUser().getFullName())
                 .email(member.getUser().getEmail())
+                .profileImage(member.getUser().getProfileImage())
                 .status(member.getStatus())
                 .validFrom(member.getValidFrom())
                 .validUntil(member.getValidUntil())

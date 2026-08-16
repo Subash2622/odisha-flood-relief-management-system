@@ -25,6 +25,7 @@ public class VolunteerResponse {
     private String fullName;
     private String email;
     private String phone;
+    private String profileImage;
     private ApprovalStatus status;
     private String assignedArea;
     private String assignedDistrict;
